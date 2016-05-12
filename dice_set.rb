@@ -1,46 +1,48 @@
 ## DiceSet Class
-#
 class DiceSet
-
   # Constructor
   def initialize
-    @values = []
+    @dice_values = []
   end
 
   # Rolls dice to obtain valid random dice values
   def roll(number)
-    @values = Array.new(number) {rand(1..6)}
+    @dice_values = Array.new(number) { rand(1..6) }
   end
 
   # Returns values obtained from the last roll
   def values
-    return @values
+    @dice_values
+  end
+
+  # Populates count_hash with appropriate face value counts
+  def populate_count_hash(dice)
+    count_hash = {}
+    face = 1
+    6.times do
+      count_hash[face] = dice.count(face)
+      face += 1
+    end
+    count_hash
   end
 
   # Calculates score for the currently rolled dice
   def score(dice)
-    return 0 if dice.size == 0
-    totalScore = 0
+    total_score = 0
 
-    # countHash: stores count of each face value
-    countHash = {}
-    face = 1
-    6.times do
-      countHash[face] = dice.count(face)
-      face += 1
-    end
+    # count_hash: stores count of each face value
+    count_hash = populate_count_hash(dice)
 
-    countHash.each do |key, value|
-      if countHash[key] >= 3
-        totalScore += key * 100
-        totalScore *= 10 if key == 1
-        countHash[key] -= 3
+    count_hash.each do |key, _value|
+      if count_hash[key] >= 3
+        total_score += key * 100
+        total_score *= 10 if key == 1
+        count_hash[key] -= 3
       end
 
-      totalScore += 100 * countHash[key] if key == 1
-      totalScore += 50 * countHash[key] if key == 5
+      total_score += 100 * count_hash[key] if key == 1
+      total_score += 50 * count_hash[key] if key == 5
     end
-    return totalScore
+    total_score
   end
-
 end

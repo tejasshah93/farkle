@@ -1,23 +1,20 @@
-## Class Game
+require_relative 'dice_set'
+require_relative 'player'
 
+# Class Game
 class Game
-
   attr_reader :players
 
   # Constructor
-  def initialize(numPlayers = 1)
-    if numPlayers < 1
-      raise ArgumentError, "Number of players must be >= 1"
-    end
+  def initialize(num_players = 1)
+    raise ArgumentError, 'Number of players must be >= 1' if num_players < 1
 
-    @players = Array.new
+    @players = []
     @dice = DiceSet.new
-    @values = []
-    @numPlayers = numPlayers
 
     # Adds player object to @players array with auto_incremental ids
     i = 1
-    numPlayers.times do
+    num_players.times do
       player = Player.new(i)
       @players << player
       i += 1
@@ -25,59 +22,55 @@ class Game
   end
 
   # Saves Id of the player who reaches 3000 first for looping one last time
-  def lastRoundCondition(stopId, player)
-    if player.netScore >= 3000
+  def last_round_condition(stop_id, player)
+    if player.net_score >= 3000
       puts "Player #{player.id}, your score >= 3000"
       puts "\n**LAST ROUND**\n"
-      if stopId == -1
-        stopId = player.id
-      end
+      stop_id = player.id if stop_id == -1
     end
-    return stopId
+    print_player_stats
+    stop_id
   end
 
   # Keeps looping through each player for consecutive turns
-  def playGame
-    stopId = -1
-    while true
-      @players.each do |player|
-        if player.id == stopId
-          return
+  def play_game
+    stop_id = -1
+    catch :stop_game do
+      loop do
+        @players.each do |player|
+          throw :stop_game if player.id == stop_id
+
+          # Executes a player's turn
+          player.turn(@dice)
+
+          stop_id = last_round_condition(stop_id, player)
         end
-
-        puts "Player #{player.id} your turn"
-        # Executes a player's turn
-        player.turn(@dice)
-
-        stopId = lastRoundCondition(stopId, player)
-        printPlayerStats
       end
     end
   end
 
   # Outputs each player's attribute values
-  def printPlayerStats
-    playerStats = {}
+  def print_player_stats
+    player_stats = {}
     @players.each do |player|
-      playerStats[player.id] = player.netScore
+      player_stats[player.id] = player.net_score
     end
 
     puts "\n------------------------------------\nPlayer Stats"
-    puts playerStats
+    puts player_stats
     puts "------------------------------------\n\n"
   end
 
   # Iterates through player.netscore and fetches the winner
-  def getWinner
-    winnerId = -1
-    winnerScore = 0
+  def fetch_winner
+    winner_id = -1
+    winner_score = 0
     @players.each do |player|
-      if player.netScore > winnerScore
-        winnerId = player.id
-        winnerScore = player.netScore
+      if player.net_score > winner_score
+        winner_id = player.id
+        winner_score = player.net_score
       end
     end
-    puts "Player #{winnerId} is the winner. Congratulations!"
+    puts "Player #{winner_id} is the winner. Congratulations!"
   end
 end
-
