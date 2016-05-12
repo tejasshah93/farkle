@@ -38,6 +38,7 @@ describe Player do
 
   describe '#each_roll' do
     it 'should return accumulated score 0 if roll score is 0' do
+      allow(STDOUT).to receive(:puts) # this disables puts
       dice = DiceSet.new
       allow(dice).to receive(:roll).and_return([])
       expect(@player.each_roll(dice, 5, 100)[1]).to eq(0)
@@ -46,6 +47,7 @@ describe Player do
 
   describe '#valid_init_turn' do
     it 'should not add accumulated score < 300 if allowed == false' do
+      allow(STDOUT).to receive(:puts) # this disables puts
       @player.allowed = false
       expect(@player.valid_init_turn(200)).to eq(0)
     end
