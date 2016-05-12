@@ -20,4 +20,4 @@ For executing the specs (unit testing), execute the following command:
 On completion, the following output is obtained after successfully passing each
 test:  
 
-![rpsecs passing](https://www.dropbox.com/s/ut3s9s9a7626rud/Screen%20Shot%202016-05-12%20at%204.34.03%20pm.png?dl=1)
+![rpsecs passing](https://dl.dropboxusercontent.com/u/91231499/Hosting/TestScreenshot.png)
